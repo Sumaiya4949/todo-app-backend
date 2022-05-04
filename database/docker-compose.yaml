@@ -1,0 +1,18 @@
+version: '3'
+
+services:
+  db:
+    image: 'postgres'
+    container_name: todo-app-db
+    environment:
+      - POSTGRES_PASSWORD=sinthy4949
+    ports:
+      - "9000:5432"
+    volumes:
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+  
+  db-admin:
+    image: thajeztah/pgadmin4
+    container_name: todo-app-db-admin
+    ports:
+      - 9001:5050
