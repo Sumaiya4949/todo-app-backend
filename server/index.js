@@ -41,13 +41,21 @@ app.post("/auth/login", async (req, res) => {
 
   try {
     const rows = await db.any(
-      `SELECT * FROM AUTH WHERE EMAIL='${email}' AND PASS_HASH='${passwordHash}';`
+      `SELECT ID FROM AUTH WHERE EMAIL='${email}' AND PASS_HASH='${passwordHash}';`
     );
 
     if (rows.length !== 1) {
       throw new Error("Not found");
     }
 
+    const [userData] = rows;
+    const sid = generateID();
+
+    await db.any(
+      `INSERT INTO APP_SESSION VALUES ('${userData.id}', '${sid}');`
+    );
+
+    res.cookie("sid", sid, { maxAge: 900000, httpOnly: true });
     res.send({ success: true });
   } catch (error) {
     res.status(400).send({ success: false });
