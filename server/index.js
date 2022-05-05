@@ -23,15 +23,16 @@ app.put("/api/register", async (req, res) => {
   const fullName = req.body.fullName;
   const id = generateID();
 
-  await db.any(`
-    INSERT INTO AUTH VALUES ('${email}', '${passwordHash}', '${id}');
-  `);
+  try {
+    await db.any(
+      `INSERT INTO AUTH VALUES ('${email}', '${passwordHash}', '${id}');`
+    );
+    await db.any(`INSERT INTO APP_USER VALUES ('${id}', '${fullName}');`);
 
-  await db.any(`
-    INSERT INTO APP_USER VALUES ('${id}', '${fullName}');
-  `);
-
-  res.send({ success: true, id });
+    res.send({ success: true, id });
+  } catch (error) {
+    res.status(400).send({ success: false });
+  }
 });
 
 app.listen(port, () => {
