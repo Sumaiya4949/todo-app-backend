@@ -17,7 +17,7 @@ const port = 5000;
 
 app.use(express.json());
 
-app.put("/api/register", async (req, res) => {
+app.put("/auth/register", async (req, res) => {
   const email = req.body.email;
   const passwordHash = req.body.passwordHash;
   const fullName = req.body.fullName;
