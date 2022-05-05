@@ -35,6 +35,33 @@ app.put("/auth/register", async (req, res) => {
   }
 });
 
+app.post("/auth/login", async (req, res) => {
+  const email = req.body.email;
+  const passwordHash = req.body.passwordHash;
+
+  try {
+    const rows = await db.any(
+      `SELECT ID FROM AUTH WHERE EMAIL='${email}' AND PASS_HASH='${passwordHash}';`
+    );
+
+    if (rows.length !== 1) {
+      throw new Error("Not found");
+    }
+
+    const [userData] = rows;
+    const sid = generateID();
+
+    await db.any(
+      `INSERT INTO APP_SESSION VALUES ('${userData.id}', '${sid}');`
+    );
+
+    res.cookie("sid", sid, { maxAge: 900000, httpOnly: true });
+    res.send({ success: true });
+  } catch (error) {
+    res.status(400).send({ success: false });
+  }
+});
+
 app.listen(port, () => {
   console.log(`Server is up on port ${port}`);
 });
