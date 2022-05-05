@@ -1,6 +1,7 @@
 const express = require("express");
 const { v4: generateID } = require("uuid");
 const pgp = require("pg-promise")();
+const cookieParser = require("cookie-parser");
 
 const dbConnSettings = {
   host: "localhost",
@@ -15,6 +16,7 @@ const db = pgp(dbConnSettings);
 const app = express();
 const port = 5000;
 
+app.use(cookieParser());
 app.use(express.json());
 
 app.put("/auth/register", async (req, res) => {
@@ -56,6 +58,17 @@ app.post("/auth/login", async (req, res) => {
     );
 
     res.cookie("sid", sid, { maxAge: 900000, httpOnly: true });
+    res.send({ success: true });
+  } catch (error) {
+    res.status(400).send({ success: false });
+  }
+});
+
+app.post("/auth/logout", async (req, res) => {
+  try {
+    const sid = req.cookies.sid;
+    await db.any(`DELETE FROM APP_SESSION WHERE S_ID='${sid}';`);
+    res.clearCookie("sid");
     res.send({ success: true });
   } catch (error) {
     res.status(400).send({ success: false });
