@@ -35,6 +35,25 @@ app.put("/auth/register", async (req, res) => {
   }
 });
 
+app.post("/auth/login", async (req, res) => {
+  const email = req.body.email;
+  const passwordHash = req.body.passwordHash;
+
+  try {
+    const rows = await db.any(
+      `SELECT * FROM AUTH WHERE EMAIL='${email}' AND PASS_HASH='${passwordHash}';`
+    );
+
+    if (rows.length !== 1) {
+      throw new Error("Not found");
+    }
+
+    res.send({ success: true });
+  } catch (error) {
+    res.status(400).send({ success: false });
+  }
+});
+
 app.listen(port, () => {
   console.log(`Server is up on port ${port}`);
 });
