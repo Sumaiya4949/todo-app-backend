@@ -30,20 +30,16 @@ app.put("/auth/register", async (req, res) => {
       `INSERT INTO AUTH VALUES ('${email}', '${passwordHash}', '${id}');`
     );
   } catch (error) {
-    res
-      .status(400)
-      .send({ success: false, message: "Could not save credentials" });
+    res.status(400).send({ message: "Could not save credentials" });
     return;
   }
 
   try {
     await db.any(`INSERT INTO APP_USER VALUES ('${id}', '${fullname}');`);
-    res.send({ success: true, id });
+    res.send({ id });
   } catch (error) {
     await db.any(`DELETE FROM AUTH WHERE EMAIL='${email}'`);
-    res
-      .status(400)
-      .send({ success: false, message: "Could not save user info" });
+    res.status(400).send({ message: "Could not save user info" });
   }
 });
 
