@@ -22,17 +22,23 @@ app.use(express.json());
 app.put("/auth/register", async (req, res) => {
   const email = req.body.email;
   const passwordHash = req.body.passwordHash;
-  const fullName = req.body.fullName;
+  const fullname = req.body.fullname;
   const id = generateID();
 
   try {
     await db.any(
       `INSERT INTO AUTH VALUES ('${email}', '${passwordHash}', '${id}');`
     );
-    await db.any(`INSERT INTO APP_USER VALUES ('${id}', '${fullName}');`);
+  } catch (error) {
+    res.status(400).send({ success: false });
+    return;
+  }
 
+  try {
+    await db.any(`INSERT INTO APP_USER VALUES ('${id}', '${fullname}');`);
     res.send({ success: true, id });
   } catch (error) {
+    await db.any(`DELETE FROM AUTH WHERE EMAIL='${email}'`);
     res.status(400).send({ success: false });
   }
 });
