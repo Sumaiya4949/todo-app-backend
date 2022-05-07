@@ -64,9 +64,9 @@ app.post("/auth/login", async (req, res) => {
     );
 
     res.cookie("sid", sid, { maxAge: 900000, httpOnly: true });
-    res.send({ success: true });
+    res.end();
   } catch (error) {
-    res.status(400).send({ success: false });
+    res.status(400).end();
   }
 });
 
