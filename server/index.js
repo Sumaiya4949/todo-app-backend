@@ -75,9 +75,9 @@ app.post("/auth/logout", async (req, res) => {
     const sid = req.cookies.sid;
     await db.any(`DELETE FROM APP_SESSION WHERE S_ID='${sid}';`);
     res.clearCookie("sid");
-    res.send({ success: true });
+    res.end();
   } catch (error) {
-    res.status(400).send({ success: false });
+    res.status(400).end();
   }
 });
 
