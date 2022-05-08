@@ -93,3 +93,26 @@ app.post("/auth/logout", async (req, res) => {
 app.listen(port, () => {
   console.log(`Server is up on port ${port}`);
 });
+
+app.get("/auth/who-am-i", async (req, res) => {
+  try {
+    const sid = req.cookies.sid;
+
+    const [userAppSessionData] = await db.any(
+      `SELECT U_ID FROM APP_SESSION WHERE S_ID='${sid}';`
+    );
+
+    const [appUserData] = await db.any(
+      `SELECT FULLNAME FROM APP_USER WHERE ID='${userAppSessionData.u_id}';`
+    );
+
+    res.send({
+      user: {
+        fullname: appUserData.fullname,
+        id: userAppSessionData.u_id,
+      },
+    });
+  } catch (error) {
+    res.status(400).send({ user: null });
+  }
+});
