@@ -56,15 +56,24 @@ app.post("/auth/login", async (req, res) => {
       throw new Error("Not found");
     }
 
-    const [userData] = rows;
+    const [authData] = rows;
     const sid = generateID();
 
     await db.any(
-      `INSERT INTO APP_SESSION VALUES ('${userData.id}', '${sid}');`
+      `INSERT INTO APP_SESSION VALUES ('${authData.id}', '${sid}');`
     );
 
-    res.cookie("sid", sid, { maxAge: 900000, httpOnly: true });
-    res.end();
+    const [appUserData] = await db.any(
+      `SELECT FULLNAME FROM APP_USER WHERE ID='${authData.id}';`
+    );
+
+    res.cookie("sid", sid, { expires: false, httpOnly: true });
+    res.send({
+      user: {
+        fullname: appUserData.fullname,
+        id: authData.id,
+      },
+    });
   } catch (error) {
     res.status(400).end();
   }
