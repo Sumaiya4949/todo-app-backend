@@ -95,19 +95,24 @@ app.listen(port, () => {
 });
 
 app.get("/auth/who-am-i", async (req, res) => {
-  const sid = req.cookies.sid;
-  const [userAppSessionData] = await db.any(
-    `SELECT U_ID FROM APP_SESSION WHERE S_ID='${sid}';`
-  );
+  try {
+    const sid = req.cookies.sid;
 
-  const [appUserData] = await db.any(
-    `SELECT FULLNAME FROM APP_USER WHERE ID='${userAppSessionData.u_id}';`
-  );
+    const [userAppSessionData] = await db.any(
+      `SELECT U_ID FROM APP_SESSION WHERE S_ID='${sid}';`
+    );
 
-  res.send({
-    user: {
-      fullname: appUserData.fullname,
-      id: userAppSessionData.u_id,
-    },
-  });
+    const [appUserData] = await db.any(
+      `SELECT FULLNAME FROM APP_USER WHERE ID='${userAppSessionData.u_id}';`
+    );
+
+    res.send({
+      user: {
+        fullname: appUserData.fullname,
+        id: userAppSessionData.u_id,
+      },
+    });
+  } catch (error) {
+    res.status(400).send({ user: null });
+  }
 });
