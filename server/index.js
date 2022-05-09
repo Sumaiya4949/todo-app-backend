@@ -116,3 +116,48 @@ app.get("/auth/who-am-i", async (req, res) => {
     res.status(400).send({ user: null });
   }
 });
+
+const getUserIdFromRequest = async (req) => {
+  const sid = req.cookies.sid;
+
+  if (sid) {
+    const rows = await db.any(
+      `SELECT U_ID FROM APP_SESSION WHERE S_ID='${sid}';`
+    );
+
+    if (rows.length === 1) {
+      const uid = rows[0].u_id;
+      return uid;
+    } else {
+      return null;
+    }
+  } else {
+    return null;
+  }
+};
+
+app.put("/api/add-todo", async (req, res) => {
+  try {
+    const title = req.body.title;
+    const todoId = generateID();
+    const creatorId = await getUserIdFromRequest(req);
+
+    if (!creatorId) {
+      throw new Error();
+    }
+
+    await db.any(
+      `INSERT INTO TODO VALUES ('${todoId}', '${title}', false, '${creatorId}');`
+    );
+
+    res.send({
+      todo: {
+        id: todoId,
+        title,
+        isDone: false,
+      },
+    });
+  } catch (error) {
+    res.status(400).end();
+  }
+});
