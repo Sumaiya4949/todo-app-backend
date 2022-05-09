@@ -161,3 +161,27 @@ app.put("/api/add-todo", async (req, res) => {
     res.status(400).end();
   }
 });
+
+app.get("/api/all-todos", async (req, res) => {
+  try {
+    const creatorId = await getUserIdFromRequest(req);
+
+    if (!creatorId) {
+      throw new Error();
+    }
+
+    const rows = await db.any(
+      `SELECT * FROM TODO WHERE CREATOR_ID='${creatorId}';`
+    );
+
+    res.send({
+      todos: rows.map((todoItem) => ({
+        id: todoItem.id,
+        title: todoItem.title,
+        isDone: todoItem.is_done,
+      })),
+    });
+  } catch (error) {
+    res.status(400).end();
+  }
+});
