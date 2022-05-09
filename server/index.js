@@ -170,12 +170,12 @@ app.get("/api/all-todos", async (req, res) => {
       throw new Error();
     }
 
-    const todos = await db.any(
+    const rows = await db.any(
       `SELECT * FROM TODO WHERE CREATOR_ID='${creatorId}';`
     );
 
     res.send({
-      todos: todos.map((todoItem) => ({
+      todos: rows.map((todoItem) => ({
         id: todoItem.id,
         title: todoItem.title,
         isDone: todoItem.is_done,
