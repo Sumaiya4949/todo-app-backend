@@ -142,6 +142,10 @@ app.put("/api/add-todo", async (req, res) => {
     const todoId = generateID();
     const creatorId = await getUserIdFromRequest(req);
 
+    if (!creatorId) {
+      throw new Error();
+    }
+
     await db.any(
       `INSERT INTO TODO VALUES ('${todoId}', '${title}', false, '${creatorId}');`
     );
