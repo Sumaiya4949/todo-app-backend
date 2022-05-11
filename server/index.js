@@ -19,6 +19,19 @@ const port = 5000;
 app.use(cookieParser());
 app.use(express.json());
 
+/**
+ * REST API #3 for user registration
+ * @description
+ *  - Extracts email, password hash, fullname from the request
+ *  - Generates unique ID for the new user
+ *  - Saves the user information to the database
+ *  - If success,
+ *    - Sends the user ID as response
+ *  - If fails,
+ *    - Sends 400 status and an error message
+ * @param {object} req HTTP request object
+ * @param {object} res HTTP response object
+ */
 app.put("/auth/register", async (req, res) => {
   const email = req.body.email;
   const passwordHash = req.body.passwordHash;
@@ -43,6 +56,20 @@ app.put("/auth/register", async (req, res) => {
   }
 });
 
+/**
+ * REST API #1 for user login
+ * @description
+ *  - Extracts email, passwordHash from the request
+ *  - Gets user id based on email and password hash from the database
+ *  - Saves user id and generated session id to the database
+ *  - If success,
+ *    - Sends session as "sid" cookie
+ *    - Sends user information
+ *  - If fails,
+ *    - Sends 400 status
+ * @param {object} req HTTP request object
+ * @param {object} res HTTP response object
+ */
 app.post("/auth/login", async (req, res) => {
   const email = req.body.email;
   const passwordHash = req.body.passwordHash;
@@ -79,6 +106,18 @@ app.post("/auth/login", async (req, res) => {
   }
 });
 
+/**
+ * REST API #2 for user logout
+ * @description
+ *  - Extract session id from request
+ *  - Delete session information from database
+ *  - If success,
+ *    - Instruct the client to clear "sid" cookie
+ *  - If fails,
+ *    - Sends 400 status
+ * @param {object} req HTTP request object
+ * @param {object} res HTTP response object
+ */
 app.post("/auth/logout", async (req, res) => {
   try {
     const sid = req.cookies.sid;
@@ -88,10 +127,6 @@ app.post("/auth/logout", async (req, res) => {
   } catch (error) {
     res.status(400).end();
   }
-});
-
-app.listen(port, () => {
-  console.log(`Server is up on port ${port}`);
 });
 
 app.get("/auth/who-am-i", async (req, res) => {
@@ -184,4 +219,8 @@ app.get("/api/all-todos", async (req, res) => {
   } catch (error) {
     res.status(400).end();
   }
+});
+
+app.listen(port, () => {
+  console.log(`Server is up on port ${port}`);
 });
