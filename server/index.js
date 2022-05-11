@@ -276,6 +276,55 @@ app.get("/api/all-todos", async (req, res) => {
   }
 });
 
+/**
+ * REST API #8 for changing todo status
+ * @description
+ * - Extract todo id and todo status from request
+ * - Gets todo creator's data from database
+ * - Gives permission to update todo status to only the todo creator
+ * - Updates todo status in database
+ * - Gets the updated todo information
+ * - If success,
+ *  - Sends information of the modified todo
+ * - If fails,
+ *  - Sends 400 status
+ * @param {object} req HTTP request object
+ * @param {object} res HTTP response object
+ */
+app.post("/api/check-todo", async (req, res) => {
+  try {
+    const id = req.body.id;
+    const isDone = req.body.isDone;
+    const authUserId = await getUserIdFromRequest(req);
+
+    if (!creatorId) {
+      throw new Error();
+    }
+
+    const [todoCreatorData] = await db.any(
+      `SELECT CREATOR_ID FROM TODO WHERE ID='${id}';`
+    );
+
+    if (todoCreator.creator_id !== authUserId) {
+      throw new Error();
+    }
+
+    await db.any(`UPDATE TODO SET IS_DONE = ${isDone} WHERE ID='${id}';`);
+
+    const [todoData] = await db.any(`SELECT * FROM TODO WHERE ID='${id}';`);
+
+    res.send({
+      todo: {
+        id: todoData.id,
+        title: todoData.title,
+        isDone: todoData.is_done,
+      },
+    });
+  } catch (error) {
+    res.status(400).end();
+  }
+});
+
 app.listen(port, () => {
   console.log(`Server is up on port ${port}`);
 });
