@@ -280,6 +280,8 @@ app.get("/api/all-todos", async (req, res) => {
  * REST API #8 for changing todo status
  * @description
  * - Extract todo id and todo status from request
+ * - Gets todo creator's data from database
+ * - Gives permission to update todo status to only the todo creator
  * - Updates todo status in database
  * - Gets the updated todo information
  * - If success,
