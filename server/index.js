@@ -203,10 +203,10 @@ const getUserIdFromRequest = async (req) => {
  * - Generates todo id
  * - Gets the todo creator's id
  * - If creator's id doesn't exist,
- *  -Throws an error
+ *  - Throws an error
  * - Saves todo to the database
  * - If success,
- *  - Sends todo
+ *  - Sends todo as response
  * - If fails,
  *  - Sends 400 status
  * @param {object} req HTTP request object
@@ -239,11 +239,11 @@ app.put("/api/add-todo", async (req, res) => {
 });
 
 /**
- * REST API #4 for get all todos
+ * REST API #4 for geting all todos
  * @description
  * - Gets the todo creator's id
  * - If creator's id doesn't exist,
- *  -Throws an error
+ *  - Throws an error
  * - Gets all todo of the current user from the database
  * - If success,
  *  - Sends all todos
