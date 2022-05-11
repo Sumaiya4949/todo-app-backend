@@ -276,6 +276,26 @@ app.get("/api/all-todos", async (req, res) => {
   }
 });
 
+app.post("/api/check-todo", async (req, res) => {
+  try {
+    const id = req.body.id;
+    const isDone = req.body.isDone;
+
+    await db.any(`UPDATE TODO SET IS_DONE = ${isDone} WHERE ID='${id}';`);
+
+    const [todoData] = await db.any(`SELECT * FROM TODO WHERE ID='${id}';`);
+    res.send({
+      todo: {
+        id: todoData.id,
+        title: todoData.title,
+        isDone: todoData.is_done,
+      },
+    });
+  } catch (error) {
+    res.status(400).end();
+  }
+});
+
 app.listen(port, () => {
   console.log(`Server is up on port ${port}`);
 });
