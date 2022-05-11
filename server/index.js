@@ -293,17 +293,17 @@ app.post("/api/check-todo", async (req, res) => {
   try {
     const id = req.body.id;
     const isDone = req.body.isDone;
-    const creatorId = await getUserIdFromRequest(req);
+    const authUserId = await getUserIdFromRequest(req);
 
     if (!creatorId) {
       throw new Error();
     }
 
-    const [authUseroData] = await db.any(
+    const [todoCreatorData] = await db.any(
       `SELECT CREATOR_ID FROM TODO WHERE ID='${id}';`
     );
 
-    if (authUseroData.creator_id !== creatorId) {
+    if (todoCreator.creator_id !== authUserId) {
       throw new Error();
     }
 
