@@ -279,12 +279,11 @@ app.get("/api/all-todos", async (req, res) => {
 /**
  * REST API #8 for changing todo status
  * @description
- * - Extracts id from request
- * - Extracts isDone from request
+ * - Extract todo id and todo status from request
  * - Updates todo status in database
  * - Gets the updated todo information
  * - If success,
- *  - Sends todo information
+ *  - Sends information of the modified todo
  * - If fails,
  *  - Sends 400 status
  * @param {object} req HTTP request object
@@ -294,10 +293,24 @@ app.post("/api/check-todo", async (req, res) => {
   try {
     const id = req.body.id;
     const isDone = req.body.isDone;
+    const creatorId = await getUserIdFromRequest(req);
+
+    if (!creatorId) {
+      throw new Error();
+    }
+
+    const [authUseroData] = await db.any(
+      `SELECT CREATOR_ID FROM TODO WHERE ID='${id}';`
+    );
+
+    if (authUseroData.creator_id !== creatorId) {
+      throw new Error();
+    }
 
     await db.any(`UPDATE TODO SET IS_DONE = ${isDone} WHERE ID='${id}';`);
 
     const [todoData] = await db.any(`SELECT * FROM TODO WHERE ID='${id}';`);
+
     res.send({
       todo: {
         id: todoData.id,
