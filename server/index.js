@@ -129,6 +129,19 @@ app.post("/auth/logout", async (req, res) => {
   }
 });
 
+/**
+ * REST API #6 for authenticated user info
+ * @description
+ * - Extract session id from request
+ * - Gets user id based on seesion id from the database
+ * - If success,
+ *  - Sends user information
+ * - If fails,
+ *  - Sends 400 status
+ *  - Doesn't send any user information
+ * @param {object} req HTTP request object
+ * @param {object} res HTTP response object
+ */
 app.get("/auth/who-am-i", async (req, res) => {
   try {
     const sid = req.cookies.sid;
@@ -152,6 +165,18 @@ app.get("/auth/who-am-i", async (req, res) => {
   }
 });
 
+/**
+ * Get user id from request
+ * @description
+ *  - Extracts session id from request
+ *  - If session id exists,
+ *    - Saves user id from database
+ *  - If session id not valid
+ *    - Doesn't save user id from database
+ * @param {object} req HTTP request object
+ * @param {object} res HTTP response object
+ * @returns {string | null} User id of todo creator
+ */
 const getUserIdFromRequest = async (req) => {
   const sid = req.cookies.sid;
 
@@ -171,6 +196,22 @@ const getUserIdFromRequest = async (req) => {
   }
 };
 
+/**
+ * REST API #5 for add todo
+ * @description
+ * - Extracts title from request
+ * - Generates todo id
+ * - Gets the todo creator's id
+ * - If creator's id doesn't exist,
+ *  -Throws an error
+ * - Saves todo to the database
+ * - If success,
+ *  - Sends todo
+ * - If fails,
+ *  - Sends 400 status
+ * @param {object} req HTTP request object
+ * @param {object} res HTTP response object
+ */
 app.put("/api/add-todo", async (req, res) => {
   try {
     const title = req.body.title;
@@ -197,6 +238,20 @@ app.put("/api/add-todo", async (req, res) => {
   }
 });
 
+/**
+ * REST API #4 for get all todos
+ * @description
+ * - Gets the todo creator's id
+ * - If creator's id doesn't exist,
+ *  -Throws an error
+ * - Gets all todo of the current user from the database
+ * - If success,
+ *  - Sends all todos
+ * - If fails,
+ *  - Sends 400 status
+ * @param {object} req HTTP request object
+ * @param {object} res HTTP response object
+ */
 app.get("/api/all-todos", async (req, res) => {
   try {
     const creatorId = await getUserIdFromRequest(req);
