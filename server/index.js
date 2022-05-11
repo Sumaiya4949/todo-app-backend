@@ -276,6 +276,20 @@ app.get("/api/all-todos", async (req, res) => {
   }
 });
 
+/**
+ * REST API #8 for changing todo status
+ * @description
+ * - Extracts id from request
+ * - Extracts isDone from request
+ * - Updates todo status in database
+ * - Gets the updated todo information
+ * - If success,
+ *  - Sends todo information
+ * - If fails,
+ *  - Sends 400 status
+ * @param {object} req HTTP request object
+ * @param {object} res HTTP response object
+ */
 app.post("/api/check-todo", async (req, res) => {
   try {
     const id = req.body.id;
