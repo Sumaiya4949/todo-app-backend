@@ -297,7 +297,7 @@ app.post("/api/check-todo", async (req, res) => {
     const isDone = req.body.isDone;
     const authUserId = await getUserIdFromRequest(req);
 
-    if (!creatorId) {
+    if (!authUserId) {
       throw new Error();
     }
 
@@ -305,7 +305,7 @@ app.post("/api/check-todo", async (req, res) => {
       `SELECT CREATOR_ID FROM TODO WHERE ID='${id}';`
     );
 
-    if (todoCreator.creator_id !== authUserId) {
+    if (todoCreatorData.creator_id !== authUserId) {
       throw new Error();
     }
 
@@ -320,6 +320,41 @@ app.post("/api/check-todo", async (req, res) => {
         isDone: todoData.is_done,
       },
     });
+  } catch (error) {
+    res.status(400).end();
+  }
+});
+
+/**
+ * REST API #7 for deleting todo
+ * @description
+ * - Extract todo id from request
+ * - Gets todo creator's data from database
+ * - Gives permission to delete todo only to the todo creator
+ * - Delete todo from database
+ * - If fails,
+ *  - Sends 400 status
+ * @param {object} req HTTP request object
+ * @param {object} res HTTP response object
+ */
+app.delete("/api/delete-todo", async (req, res) => {
+  try {
+    const todoId = req.body.id;
+    const authUserId = await getUserIdFromRequest(req);
+
+    if (!authUserId) {
+      throw new Error();
+    }
+    const [todoCreatorData] = await db.any(
+      `SELECT CREATOR_ID FROM TODO WHERE ID='${todoId}';`
+    );
+
+    if (todoCreatorData.creator_id !== authUserId) {
+      throw new Error();
+    }
+
+    await db.any(`DELETE FROM TODO WHERE ID='${todoId}';`);
+    res.end();
   } catch (error) {
     res.status(400).end();
   }
