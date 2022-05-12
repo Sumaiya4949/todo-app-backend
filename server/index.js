@@ -328,10 +328,11 @@ app.post("/api/check-todo", async (req, res) => {
 /**
  * REST API #7 for deleting todo
  * @description
- * - Extract todo id from request
+ * - Extracts todo id from request
  * - Gets todo creator's data from database
- * - Gives permission to delete todo only to the todo creator
- * - Delete todo from database
+ * - Deletes todo from database if the requesting user is its creator
+ * - If success,
+ *  - Sends 200 status
  * - If fails,
  *  - Sends 400 status
  * @param {object} req HTTP request object
@@ -345,6 +346,7 @@ app.delete("/api/delete-todo", async (req, res) => {
     if (!authUserId) {
       throw new Error();
     }
+
     const [todoCreatorData] = await db.any(
       `SELECT CREATOR_ID FROM TODO WHERE ID='${todoId}';`
     );
