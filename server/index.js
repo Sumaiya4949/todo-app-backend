@@ -3,6 +3,8 @@ const { v4: generateID } = require("uuid");
 const pgp = require("pg-promise")();
 const cookieParser = require("cookie-parser");
 
+const API_VERSION = "1";
+
 const dbConnSettings = {
   host: "localhost",
   port: 9000,
@@ -32,7 +34,8 @@ app.use(express.json());
  * @param {object} req HTTP request object
  * @param {object} res HTTP response object
  */
-app.put("/auth/register", async (req, res) => {
+
+app.put(`/auth/v${API_VERSION}/register`, async (req, res) => {
   const email = req.body.email;
   const passwordHash = req.body.passwordHash;
   const fullname = req.body.fullname;
@@ -70,7 +73,7 @@ app.put("/auth/register", async (req, res) => {
  * @param {object} req HTTP request object
  * @param {object} res HTTP response object
  */
-app.post("/auth/login", async (req, res) => {
+app.post(`/auth/v${API_VERSION}/login`, async (req, res) => {
   const email = req.body.email;
   const passwordHash = req.body.passwordHash;
 
@@ -118,7 +121,7 @@ app.post("/auth/login", async (req, res) => {
  * @param {object} req HTTP request object
  * @param {object} res HTTP response object
  */
-app.post("/auth/logout", async (req, res) => {
+app.post(`/auth/v${API_VERSION}/logout`, async (req, res) => {
   try {
     const sid = req.cookies.sid;
     await db.any(`DELETE FROM APP_SESSION WHERE S_ID='${sid}';`);
@@ -142,7 +145,7 @@ app.post("/auth/logout", async (req, res) => {
  * @param {object} req HTTP request object
  * @param {object} res HTTP response object
  */
-app.get("/auth/who-am-i", async (req, res) => {
+app.get(`/auth/v${API_VERSION}/who-am-i`, async (req, res) => {
   try {
     const sid = req.cookies.sid;
 
@@ -212,7 +215,7 @@ const getUserIdFromRequest = async (req) => {
  * @param {object} req HTTP request object
  * @param {object} res HTTP response object
  */
-app.put("/api/add-todo", async (req, res) => {
+app.put(`/api/v${API_VERSION}/add-todo`, async (req, res) => {
   try {
     const title = req.body.title;
     const todoId = generateID();
@@ -252,7 +255,7 @@ app.put("/api/add-todo", async (req, res) => {
  * @param {object} req HTTP request object
  * @param {object} res HTTP response object
  */
-app.get("/api/all-todos", async (req, res) => {
+app.get(`/api/v${API_VERSION}/all-todos`, async (req, res) => {
   try {
     const creatorId = await getUserIdFromRequest(req);
 
@@ -291,7 +294,7 @@ app.get("/api/all-todos", async (req, res) => {
  * @param {object} req HTTP request object
  * @param {object} res HTTP response object
  */
-app.post("/api/check-todo", async (req, res) => {
+app.post(`/api/v${API_VERSION}/check-todo`, async (req, res) => {
   try {
     const id = req.body.id;
     const isDone = req.body.isDone;
@@ -338,7 +341,7 @@ app.post("/api/check-todo", async (req, res) => {
  * @param {object} req HTTP request object
  * @param {object} res HTTP response object
  */
-app.delete("/api/delete-todo", async (req, res) => {
+app.delete(`/api/v${API_VERSION}/delete-todo`, async (req, res) => {
   try {
     const todoId = req.body.id;
     const authUserId = await getUserIdFromRequest(req);
