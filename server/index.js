@@ -226,7 +226,11 @@ app.put(`/api/v${API_VERSION}/add-todo`, async (req, res) => {
     }
 
     await db.any(
-      `INSERT INTO TODO VALUES ('${todoId}', '${title}', false, '${creatorId}');`
+      `INSERT INTO TODO VALUES ('${todoId}', '${title}', false, current_timestamp, '${creatorId}');`
+    );
+
+    const [creationTimeData] = await db.any(
+      `SELECT CREATION_TIME FROM TODO WHERE ID='${todoId}';`
     );
 
     res.send({
@@ -234,6 +238,7 @@ app.put(`/api/v${API_VERSION}/add-todo`, async (req, res) => {
         id: todoId,
         title,
         isDone: false,
+        creationTime: new Date(creationTimeData.creation_time).getTime(),
       },
     });
   } catch (error) {
