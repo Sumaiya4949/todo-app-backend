@@ -277,6 +277,7 @@ app.get(`/api/v${API_VERSION}/all-todos`, async (req, res) => {
         id: todoItem.id,
         title: todoItem.title,
         isDone: todoItem.is_done,
+        creationTime: new Date(todoItem.creation_time).getTime(),
       })),
     });
   } catch (error) {
