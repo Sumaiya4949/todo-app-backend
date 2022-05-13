@@ -40,6 +40,21 @@ const connector = {
 
     return data.todo;
   },
+
+  async deleteTodo(id, sid) {
+    const delData = { id };
+    const delHeaders = { Cookie: `sid=${sid};` };
+
+    await axios.delete(
+      `${REST_API_SERVER}/api/v${REST_API_VERSION}/delete-todo`,
+      {
+        data: delData,
+        headers: delHeaders,
+      }
+    );
+
+    return true;
+  },
 };
 
 module.exports = connector;
