@@ -164,6 +164,7 @@ app.get(`/auth/v${API_VERSION}/who-am-i`, async (req, res) => {
       },
     });
   } catch (error) {
+    console.log(error);
     res.status(400).send({ user: null });
   }
 });

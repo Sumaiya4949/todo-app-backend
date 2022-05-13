@@ -4,6 +4,7 @@ const { GraphQLFileLoader } = require("@graphql-tools/graphql-file-loader");
 var cookie = require("cookie");
 const { meResolver } = require("./resolvers/me");
 const { userResolver } = require("./resolvers/User");
+const connector = require("./connector");
 
 const typeDefs = loadSchemaSync("schema.graphql", {
   loaders: [new GraphQLFileLoader()],
@@ -28,11 +29,16 @@ const resolvers = {
 const server = new ApolloServer({
   typeDefs,
   resolvers,
+
   context: ({ req }) => {
     return {
       sid: cookie.parse(req.headers.cookies).sid,
     };
   },
+
+  dataSources: () => ({
+    todoApi: connector,
+  }),
 });
 
 server.listen(4000).then(({ url }) => {
