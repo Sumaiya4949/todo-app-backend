@@ -5,6 +5,7 @@ var cookie = require("cookie");
 const { meResolver } = require("./resolvers/me");
 const { userResolver } = require("./resolvers/User");
 const connector = require("./connector");
+const { addTodoResolver } = require("./resolvers/addTodo");
 
 const typeDefs = loadSchemaSync("schema.graphql", {
   loaders: [new GraphQLFileLoader()],
@@ -19,7 +20,7 @@ const resolvers = {
     logout: () => {},
   },
   Mutation: {
-    addTodo: () => {},
+    addTodo: addTodoResolver,
     deleteTodo: () => {},
     changeTodoStatus: () => {},
     register: () => {},
