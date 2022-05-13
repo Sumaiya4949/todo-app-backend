@@ -9,11 +9,14 @@ const typeDefs = loadSchemaSync("schema.graphql", {
 const resolvers = {
   Query: {
     me: () => {},
+    login: () => {},
+    logout: () => {},
   },
   Mutation: {
     addTodo: () => {},
     deleteTodo: () => {},
     changeTodoStatus: () => {},
+    register: () => {},
   },
 };
 
