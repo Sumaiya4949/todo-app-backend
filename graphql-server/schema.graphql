@@ -1,0 +1,72 @@
+"""
+An user of the todo app
+"""
+type User {
+  """
+  Unique id of the user
+  """
+  id: String!
+  """
+  Email of the user
+  """
+  email: String!
+  """
+  Full name of the user
+  """
+  fullname: String!
+  """
+  List of all todos of the user
+  """
+  todos: [Todo!]!
+}
+
+"""
+A todo
+"""
+type Todo {
+  """
+  Unique id of the todo
+  """
+  id: String!
+  """
+  Title of the todo
+  """
+  title: String!
+  """
+  Status of the todo
+  """
+  isDone: Boolean!
+  """
+  Creation time of the todo
+  """
+  creationTime: String!
+}
+
+type Query {
+  """
+  Query to get all the information of the user
+  """
+  me: User
+}
+
+type Mutation {
+  """
+  Mutation to add a todo
+  Arugments
+    - title: title of the todo
+  """
+  addTodo(title: String!): Todo
+  """
+  Mutation to delete a todo
+  Arugments
+    - id: id of the todo
+  """
+  deleteTodo(id: String!): Boolean!
+  """
+  Mutation to change the status of a todo
+  Arugments
+    - id: id of the todo
+    - isDone: flag to determine if the todo is done or not done
+  """
+  changeTodoStatus(id: String!, isDone: Boolean!): Todo
+}
