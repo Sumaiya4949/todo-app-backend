@@ -7,10 +7,6 @@ type User {
   """
   id: String!
   """
-  Email of the user
-  """
-  email: String!
-  """
   Full name of the user
   """
   fullname: String!

@@ -1,6 +1,8 @@
-const { ApolloServer, gql } = require("apollo-server");
+const { ApolloServer } = require("apollo-server");
 const { loadSchemaSync } = require("@graphql-tools/load");
 const { GraphQLFileLoader } = require("@graphql-tools/graphql-file-loader");
+const { meResolver } = require("./resolvers/me");
+var cookie = require("cookie");
 
 const typeDefs = loadSchemaSync("schema.graphql", {
   loaders: [new GraphQLFileLoader()],
@@ -8,7 +10,7 @@ const typeDefs = loadSchemaSync("schema.graphql", {
 
 const resolvers = {
   Query: {
-    me: () => {},
+    me: meResolver,
     login: () => {},
     logout: () => {},
   },
@@ -23,6 +25,11 @@ const resolvers = {
 const server = new ApolloServer({
   typeDefs,
   resolvers,
+  context: ({ req }) => {
+    return {
+      sid: cookie.parse(req.headers.cookies).sid,
+    };
+  },
 });
 
 server.listen(4000).then(({ url }) => {
