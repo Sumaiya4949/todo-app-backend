@@ -1,14 +1,17 @@
 const { ApolloServer } = require("apollo-server");
 const { loadSchemaSync } = require("@graphql-tools/load");
 const { GraphQLFileLoader } = require("@graphql-tools/graphql-file-loader");
-const { meResolver } = require("./resolvers/me");
 var cookie = require("cookie");
+const { meResolver } = require("./resolvers/me");
+const { userResolver } = require("./resolvers/User");
 
 const typeDefs = loadSchemaSync("schema.graphql", {
   loaders: [new GraphQLFileLoader()],
 });
 
 const resolvers = {
+  User: userResolver,
+
   Query: {
     me: meResolver,
     login: () => {},
