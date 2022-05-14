@@ -45,7 +45,7 @@ type Query {
     - email: email of user
     - passwordHash: hash of password of user
   """
-  login(email: String!, passwordHash: String!): Boolean!
+  login(email: String!, passwordHash: String!): User
   """
   Query to logout user
   """
