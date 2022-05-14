@@ -75,7 +75,6 @@ const connector = {
   },
 
   async login(email, passwordHash, setSidCookie) {
-    console.log(email, passwordHash);
     const { headers } = await axios.post(
       `${REST_API_SERVER}/auth/v${REST_API_VERSION}/login`,
       {
@@ -86,6 +85,20 @@ const connector = {
 
     const sid = cookie.parse(headers["set-cookie"][0]).sid;
     setSidCookie(sid);
+    return true;
+  },
+
+  async logout(sid, clearSidCookie) {
+    await axios.post(
+      `${REST_API_SERVER}/auth/v${REST_API_VERSION}/logout`,
+      null,
+      {
+        headers: { Cookie: `sid=${sid};` },
+      }
+    );
+
+    clearSidCookie();
+
     return true;
   },
 };
