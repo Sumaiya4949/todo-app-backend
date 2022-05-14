@@ -7,6 +7,7 @@ const { userResolver } = require("./resolvers/User");
 const connector = require("./connector");
 const { addTodoResolver } = require("./resolvers/addTodo");
 const { deleteTodoResolver } = require("./resolvers/deleteTodo");
+const { changeTodoStatusResolver } = require("./resolvers/changeTodoStatus");
 
 const typeDefs = loadSchemaSync("schema.graphql", {
   loaders: [new GraphQLFileLoader()],
@@ -24,7 +25,7 @@ const resolvers = {
   Mutation: {
     addTodo: addTodoResolver,
     deleteTodo: deleteTodoResolver,
-    changeTodoStatus: () => {},
+    changeTodoStatus: changeTodoStatusResolver,
     register: () => {},
   },
 };

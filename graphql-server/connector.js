@@ -55,6 +55,23 @@ const connector = {
 
     return true;
   },
+
+  async changeTodoStatus(id, isDone, sid) {
+    const changeHeaders = { Cookie: `sid=${sid};` };
+
+    const { data } = await axios.post(
+      `${REST_API_SERVER}/api/v${REST_API_VERSION}/check-todo`,
+      {
+        id,
+        isDone,
+      },
+      {
+        headers: changeHeaders,
+      }
+    );
+
+    return data.todo;
+  },
 };
 
 module.exports = connector;
