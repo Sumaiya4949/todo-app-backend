@@ -7,10 +7,6 @@ type User {
   """
   id: String!
   """
-  Email of the user
-  """
-  email: String!
-  """
   Full name of the user
   """
   fullname: String!
@@ -44,12 +40,31 @@ type Todo {
 
 type Query {
   """
+  Query to login user
+  Arugments
+    - email: email of user
+    - passwordHash: hash of password of user
+  """
+  login(email: String!, passwordHash: String!): Boolean!
+  """
+  Query to logout user
+  """
+  logout: Boolean!
+  """
   Query to get all the information of the user
   """
   me: User
 }
 
 type Mutation {
+  """
+  Mutation to register user
+  Arugments
+    - email: email of user
+    - passwordHash: hash of password of user
+    - fullname: fullname of user
+  """
+  register(email: String!, passwordHash: String!, fullname: String!): Boolean!
   """
   Mutation to add a todo
   Arugments
