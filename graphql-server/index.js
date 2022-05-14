@@ -8,6 +8,7 @@ const connector = require("./connector");
 const { addTodoResolver } = require("./resolvers/addTodo");
 const { deleteTodoResolver } = require("./resolvers/deleteTodo");
 const { changeTodoStatusResolver } = require("./resolvers/changeTodoStatus");
+const { loginResolver } = require("./resolvers/login");
 
 const typeDefs = loadSchemaSync("schema.graphql", {
   loaders: [new GraphQLFileLoader()],
@@ -18,8 +19,8 @@ const resolvers = {
 
   Query: {
     me: meResolver,
-    login: () => {},
     logout: () => {},
+    login: loginResolver,
   },
 
   Mutation: {
@@ -34,9 +35,12 @@ const server = new ApolloServer({
   typeDefs,
   resolvers,
 
-  context: ({ req }) => {
+  context: ({ req, res }) => {
     return {
-      sid: cookie.parse(req.headers.cookies).sid,
+      sid: cookie.parse(req.headers.cookies || "").sid,
+      setSidCookie: (sid) => {
+        res.cookie("sid", sid, { httpOnly: true, expires: false });
+      },
     };
   },
 
