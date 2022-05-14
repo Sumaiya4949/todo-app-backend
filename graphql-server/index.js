@@ -10,6 +10,7 @@ const { deleteTodoResolver } = require("./resolvers/deleteTodo");
 const { changeTodoStatusResolver } = require("./resolvers/changeTodoStatus");
 const { loginResolver } = require("./resolvers/login");
 const { logoutResolver } = require("./resolvers/logout");
+const { registerResolver } = require("./resolvers/register");
 
 const typeDefs = loadSchemaSync("schema.graphql", {
   loaders: [new GraphQLFileLoader()],
@@ -28,7 +29,7 @@ const resolvers = {
     addTodo: addTodoResolver,
     deleteTodo: deleteTodoResolver,
     changeTodoStatus: changeTodoStatusResolver,
-    register: () => {},
+    register: registerResolver,
   },
 };
 

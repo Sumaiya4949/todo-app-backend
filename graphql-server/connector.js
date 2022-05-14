@@ -101,6 +101,16 @@ const connector = {
 
     return true;
   },
+
+  async register(email, passwordHash, fullname) {
+    await axios.put(`${REST_API_SERVER}/auth/v${REST_API_VERSION}/register`, {
+      email,
+      passwordHash,
+      fullname,
+    });
+
+    return true;
+  },
 };
 
 module.exports = connector;
