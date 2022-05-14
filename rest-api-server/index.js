@@ -328,6 +328,7 @@ app.post(`/api/v${API_VERSION}/check-todo`, async (req, res) => {
         id: todoData.id,
         title: todoData.title,
         isDone: todoData.is_done,
+        creationTime: todoData.creation_time,
       },
     });
   } catch (error) {
